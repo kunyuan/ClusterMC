@@ -2,7 +2,6 @@
 #define markov_H
 
 #include "global.h"
-#include "utility/rng.h"
 #include "weight.h"
 #include <string>
 #include <unordered_map>

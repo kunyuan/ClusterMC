@@ -215,10 +215,10 @@ void InitVar() {
   // initialize momentum variables
   for (auto &mom : Var.LoopMom)
     for (int i = 0; i < D; i++)
-      mom[i] = rng::urn() * Para.Kf / sqrt(D);
+      mom[i] = rng::urn(0.0, Para.Kf / sqrt(D));
 
   for (auto &t : Var.Tau)
-    t = rng::urn() * Para.Beta;
+    t = rng::urn(0.0, Para.Beta);
 
   // reference tau, it should not be updated
   Var.Tau[0] = 0.0;

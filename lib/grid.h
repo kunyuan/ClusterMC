@@ -4,7 +4,6 @@
 #include "abort.h"
 #include <algorithm>
 #include <array>
-#include <assert.h>
 #include <iomanip>
 #include <iostream>
 #include <math.h>
@@ -21,11 +20,11 @@ public:
             bool dense2sparse) {
 
     bound = _bound;
-    assert(bound[0] < bound[1]);
+    ASSERT_ALLWAYS(bound[0] < bound[1], bound[0] << " and " << bound[1]);
     idx = _idx;
-    assert(idx[0] < idx[1]);
+    ASSERT_ALLWAYS(idx[0] < idx[1], idx[0] << " and " << idx[1]);
     lambda = _lambda;
-    assert(lambda > 0.0);
+    ASSERT_ALLWAYS(lambda > 0.0, lambda);
 
     if (dense2sparse == false) {
       swap(bound[0], bound[1]);
@@ -56,7 +55,8 @@ private:
 
 inline vector<double> logGrid(const vector<Coeff> &Coeff,
                               const vector<array<int, 2>> &Range) {
-  assert(Coeff.size() == Range.size());
+  ASSERT_ALLWAYS(Coeff.size() == Range.size(), Coeff.size()
+                                                   << "!=" << Range.size());
   vector<double> grid;
   for (int i = 0; i < (int)Range.size(); ++i)
     for (int j = Range[i][0]; j < Range[i][1]; ++j)
@@ -73,8 +73,8 @@ public:
   vector<double> build(double beta, int _size, double scale) {
     ASSERT_ALLWAYS(_size > 0, "size must be positive!");
     size = _size;
-    assert(size > 2);
-    assert(size % 2 == 0);
+    ASSERT_ALLWAYS(size > 2, size);
+    ASSERT_ALLWAYS(size % 2 == 0, size);
     double lambda = beta / scale / (_size / 2.0);
 
     _coeff0.init({0.0, beta / 2.0}, {0.0, size / 2 - 0.5}, lambda, true);
@@ -92,10 +92,11 @@ public:
     grid[0] = 1.0e-8;
     grid[size - 1] = beta - 1.0e-8;
     //////   some simple test ////////
-    assert(floor(grid[1] - 1.0e-16) == 0);
-    assert(floor((grid[size - 2] + grid[size - 1]) / 2.0) == size - 2);
-    assert(floor(0.0) == 0);
-    assert(floor(grid[size - 1]) == size - 2);
+    ASSERT_ALLWAYS(floor(grid[1] - 1.0e-16) == 0, "");
+    ASSERT_ALLWAYS(floor((grid[size - 2] + grid[size - 1]) / 2.0) == size - 2,
+                   "");
+    ASSERT_ALLWAYS(floor(0.0) == 0, "");
+    ASSERT_ALLWAYS(floor(grid[size - 1]) == size - 2, "");
     //////////////////////////////////
     return grid;
   };
@@ -129,9 +130,9 @@ public:
   int kFidx;
   vector<double> grid;
   vector<double> build(double kF, double maxK, int _size, double scale) {
-    assert(maxK > kF);
+    ASSERT_ALLWAYS(maxK > kF, maxK << " <= " << kF);
     size = _size;
-    assert(size > 2);
+    ASSERT_ALLWAYS(size > 2, size << "<=2");
     kFidx = size / 2;
     double lambda = kF / scale / kFidx;
 
@@ -147,10 +148,11 @@ public:
     grid[0] = 1.0e-6;
     // cout << floor(maxK) << endl;
     //////   some simple test ////////
-    assert(floor(grid[1] - 1.0e-16) == 0);
-    assert(floor((grid[size - 2] + grid[size - 1]) / 2.0) == size - 2);
-    assert(floor(0.0) == 0);
-    assert(floor(grid[size - 1]) == size - 2);
+    ASSERT_ALLWAYS(floor(grid[1] - 1.0e-16) == 0, "");
+    ASSERT_ALLWAYS(floor((grid[size - 2] + grid[size - 1]) / 2.0) == size - 2,
+                   "");
+    ASSERT_ALLWAYS(floor(0.0) == 0, "");
+    ASSERT_ALLWAYS(floor(grid[size - 1]) == size - 2, "");
     //////////////////////////////////
     return grid;
   };
@@ -190,8 +192,8 @@ public:
     kFidx = size / 3;
     twokFidx = size / 3 * 2;
     double lambda = kF / scale / kFidx;
-    assert(size > 3);
-    assert(maxK > 2.0 * kF);
+    ASSERT_ALLWAYS(size > 3, size << "<=3");
+    ASSERT_ALLWAYS(maxK > 2.0 * kF, maxK << "<= 2.0*" << kF);
 
     _coeff0.init({0.0, kF}, {0.0, kFidx * 1.0}, lambda, true);
     array<int, 2> range0 = {0, kFidx};
@@ -204,10 +206,11 @@ public:
 
     grid[0] = 1.0e-6;
     //////   some simple test ////////
-    assert(floor(grid[1] - 1.0e-16) == 0);
-    assert(floor((grid[size - 2] + grid[size - 1]) / 2.0) == size - 2);
-    assert(floor(0.0) == 0);
-    assert(floor(grid[size - 1]) == size - 2);
+    ASSERT_ALLWAYS(floor(grid[1] - 1.0e-16) == 0, "");
+    ASSERT_ALLWAYS(floor((grid[size - 2] + grid[size - 1]) / 2.0) == size - 2,
+                   "");
+    ASSERT_ALLWAYS(floor(0.0) == 0, "");
+    ASSERT_ALLWAYS(floor(grid[size - 1]) == size - 2, "");
     //////////////////////////////////
     return grid;
   };
@@ -246,15 +249,15 @@ public:
   vector<double> grid;
   vector<double> build(std::array<double, 2> bounds, int _size) {
     size = _size;
-    assert(size > 1);
+    ASSERT_ALLWAYS(size > 1, size << "<=1");
     grid.resize(size);
     lowerBound = bounds[0];
     delta = (bounds[1] - bounds[0]) / (size - 1);
     for (int i = 0; i < size; ++i)
       grid[i] = i * delta + lowerBound;
 
-    assert(floor(grid[size - 1]) == size - 2);
-    assert(floor(grid[0]) == 0);
+    ASSERT_ALLWAYS(floor(grid[size - 1]) == size - 2, "");
+    ASSERT_ALLWAYS(floor(grid[0]) == 0, "");
 
     return grid;
   };

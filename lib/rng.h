@@ -1,5 +1,5 @@
-namespace rng {
 #include <random>
+namespace rng {
 
 inline auto &global_urng() {
   static std::mt19937 u{};
