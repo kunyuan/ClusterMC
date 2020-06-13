@@ -1,19 +1,9 @@
-import seaborn as sns
-import os
-import sys
-import re
-import glob
+from utility.color import *
 import numpy as np
-from color import *
-
-import matplotlib.pyplot as plt
-import matplotlib as mat
-mat.rcParams.update({'font.size': 16})
-mat.rcParams["font.family"] = "Times New Roman"
-size = 12
-
-sns.set_style("whitegrid")
-sns.set_palette("colorblind", n_colors=16)
+import glob
+import re
+import sys
+import os
 
 
 def GetLine(file):
@@ -68,36 +58,47 @@ class param:
             self.Nf = self.kF/4.0/np.pi**2*self.Spin
         elif self.Dim == 2:
             self.kF = np.sqrt(2.0)/self.Rs  # 2D
-            print "Not Implemented for Dimension {0}".format(self.Dim)
+            print(f"Not Implemented for Dimension {self.Dim}")
             sys.exit(0)
         else:
-            print "Not Implemented for Dimension {0}".format(self.Dim)
+            print(f"Not Implemented for Dimension {self.Dim}")
             sys.exit(0)
 
         self.EF = self.kF**2
         self.Beta /= self.EF
         self.MaxExtMom *= self.kF
 
-        print yellow("Parameters:")
-        print "Rs={0}, kF={1}, EF={2}, Beta={3}, Mass2={4}, Lambda={5}, Dim={6}, Spin={7}\n".format(
-            self.Rs, self.kF, self.EF, self.Beta, self.Mass2, self.Lambda, self.Dim, self.Spin)
+        print(yellow("Parameters:"))
+        print(f"Rs={self.Rs}, kF={self.kF}, EF={self.EF}, Beta={self.Beta}, Mass2={self.Mass2}, Lambda={self.Lambda}, Dim={self.Dim}, Spin={self.Spin}\n")
+        print(yellow("Grid Information:"))
+        print(
+            f"TauSize={self.TauGridSize}, MomSize={self.MomGridSize}, AngleSize={self.AngGridSize}, MaxExtMom={self.MaxExtMom}")
 
-        print yellow("Grid Information:")
-        print "TauSize={0}, MomSize={1}, AngleSize={2}, MaxExtMom={3}".format(
-            self.TauGridSize, self.MomGridSize, self.AngGridSize, self.MaxExtMom)
+        print(yellow("Timer Information:"))
+        print("Print={self.PrintTimer}, Save={self.SaveTimer}, ReWeight={self.ReWeightTimer}, Message={self.MessageTimer}, Collection={self.CollectionTimer}")
 
-        print yellow("Timer Information:")
-        print "Print={0}, Save={1}, ReWeight={2}, Message={3}, Collection={4}".format(
-            self.PrintTimer, self.SaveTimer, self.ReWeightTimer, self.MessageTimer, self.CollectionTimer)
+# def Estimate(Data, Weights, axis=0):
+#     """ Return Mean and Error  with given weights"""
+#     # Assume weights are similar when calculating error bars
+#     Weights = np.array(Weights)
+#     Num = len(Weights)
+#     assert Num > 0, "Data is empty!"
+#     assert Data.shape[0] == Num, "Data and Weights size must match!"
+#     Avg = np.average(Data, weights=Weights, axis=0)
+#     Var = np.average((Data-Avg)**2, weights=Weights, axis=0)
+#     Err = np.sqrt(Var/(Num-1)) if Num > 1 else 0.0
+#     return Avg, Err
 
-# For the given path, get the List of all files in the directory tree
 
-
-def Estimate(Data, Weights):
+def Estimate(Data, Weights, operation=None):
     """ Return Mean and Error  with given weights"""
     # Assume weights are similar when calculating error bars
     assert len(Data) == len(Weights), "Data and Weights size must match!"
     assert len(Weights) > 0, "Data is empty!"
+
+    if operation is not None:
+        Data = [operation(d) for d in Data]
+
     Z = np.sum(Weights)
     Avg = sum(Data)/sum(Weights)
     if len(Data) > 1:
@@ -109,14 +110,12 @@ def Estimate(Data, Weights):
 
 
 def LoadFile(Folder, FileName, shape=None):
-    Step = []
-    Norm = []
-    Data = []
+    Step, Norm, Data = [], [], []
     Grid = {}
 
     for f in getListOfFiles(Folder):
         if re.search(FileName, f):
-            print "Loading ", f
+            print("Loading ", f)
             try:
                 with open(f, "r") as file:
                     Step.append(int(file.readline().split(":")[1]))
@@ -138,20 +137,10 @@ def LoadFile(Folder, FileName, shape=None):
                     Data.append(np.loadtxt(f).reshape(shape))
 
             except Exception as e:
-                print "Failed to load {0}".format(f)
-                print str(e)
+                print(f"Failed to load {f}")
+                print(str(e))
 
     return Data, Norm, Step, Grid
-
-
-def ErrorPlot(p, x, d, color='k', marker='s', label=None, size=4, shift=False):
-    p.plot(x, d, marker=marker, c=color, label=label,
-           lw=1, markeredgecolor="None", linestyle="--", markersize=size)
-
-
-ColorList = ['k', 'r', 'b', 'g', 'm', 'c', 'navy',
-             'y', 'cyan', 'darkgreen', 'violet', 'lime', 'purple']
-ColorList = ColorList*40
 
 
 if __name__ == '__main__':

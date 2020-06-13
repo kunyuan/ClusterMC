@@ -1,8 +1,9 @@
 import numpy as np
 from scipy import integrate
 from scipy import interpolate
-import spectral
+import utility.spectral as spectral
 import numpy.linalg as linalg
+import sys
 
 
 class fourier:
@@ -13,14 +14,22 @@ class fourier:
         self.WnSize = len(WnGrid)
         self.Beta = Beta
 
-        self.uTauGrid = np.linspace(0.0, Beta, 4096)  # uniform grid
-        print "TauGrid", self.TauGrid[0], Beta-self.TauGrid[-1]
-        self.uTauGrid[0] = 2.e-8
-        self.uTauGrid[-1] = Beta-4.e-7
+        self.uTauGrid = np.linspace(
+            TauGrid[0], TauGrid[-1], 4096)  # uniform grid
+        # print "TauGrid", self.TauGrid[0], Beta-self.TauGrid[-1]
+        # self.uTauGrid[0] = 2.e-8
+        # self.uTauGrid[-1] = Beta-4.e-7
 
     def InitializeKernel(self, MaxRealFreq, RealFreqSize, Type, Threshold):
-        self.RealFreqGrid = np.linspace(-MaxRealFreq,
-                                        MaxRealFreq, RealFreqSize)
+        if Type == "Fermi":
+            self.RealFreqGrid = np.linspace(-MaxRealFreq,
+                                            MaxRealFreq, RealFreqSize)
+        elif Type == "Bose":
+            self.RealFreqGrid = np.linspace(0.0,
+                                            MaxRealFreq, RealFreqSize)
+        else:
+            sys.exit("Not implemented!")
+
         self.RealFreqSize = RealFreqSize
         self.Type = Type
         self.KernelT = spectral.TauKernel(
@@ -49,16 +58,11 @@ class fourier:
 
     def SpectralW2T(self, dataW):
         spectral = np.dot(dataW, self.InvKernelW)
-        print self.InvKernelW.shape
-        print dataW.shape
+        # print self.InvKernelW.shape
+        # print dataW.shape
         dataT = np.dot(spectral, self.uKernelT)
         f = interpolate.interp1d(self.uTauGrid, dataT, axis=-1)
-        sTauGrid = np.array(self.TauGrid)
-        sTauGrid[0] = 3.0e-8
-        sTauGrid[-1] = self.Beta-5.0e-7
-        # print self.uTauGrid[0], self.uTauGrid[-1]
-        # print self.TauGrid[0], self.TauGrid[-1]
-        dataT = f(sTauGrid)
+        dataT = f(self.TauGrid)
         return dataT, spectral
 
     # def __pinv(self, u, s, v, w, threshold):
@@ -76,14 +80,17 @@ class fourier:
         assert dataT.shape[-1] == self.TauSize, "The Tau axis must have {0} elements.".format(
             self.TauSize)
 
+        f = interpolate.interp1d(self.TauGrid, dataT, axis=-1)
+        dataT = f(self.uTauGrid)
+
         Wshape = np.array(dataT.shape)
         Wshape[-1] = self.WnSize
 
         dataW = np.zeros(Wshape, dtype=complex)
         for i, freq in enumerate(self.WnGrid):
-            phase = np.exp(-1j*self.TauGrid*freq)
+            phase = np.exp(-1j*self.uTauGrid*freq)
             dw = dataT[..., :]*phase
-            dataW[..., i] = integrate.trapz(dw[..., :], self.TauGrid)
+            dataW[..., i] = integrate.trapz(dw[..., :], self.uTauGrid)
             # SigmaW[i] = integrate.simps(dw, self.TauGrid)
         return dataW
 

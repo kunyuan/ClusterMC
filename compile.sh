@@ -1,6 +1,6 @@
 #!/bin/bash
-compiler=clang++
-#compiler=icpc
+#compiler=clang++
+compiler=icpc
 #compiler=g++
 #type=Debug
 type=Release
@@ -11,7 +11,7 @@ if [ -n "$1" ]
   if [ $1 = "-n" ] || [ $1 = "--new" ]; then
     make clean
     rm -rf * #force to rerun cmake configuration
-    cmake -DCMAKE_BUILD_TYPE=$type -DCMAKE_CXX_COMPILER=$compiler ../src
+    cmake -DCMAKE_BUILD_TYPE=$type -DCMAKE_CXX_COMPILER=$compiler ..
   fi
 fi
 make -j

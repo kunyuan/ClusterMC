@@ -1,5 +1,5 @@
 import numpy as np
-from IO import *
+from utility.IO import *
 import numpy.linalg as linalg
 
 
@@ -15,13 +15,13 @@ class spectral:
     def TauBasis(self, TauGrid, Type, Num):
         """v[0:Num, :] maps N coefficients to Tau, v.T[:, 0:Num] maps Tau to coefficients"""
         _, s, v = self.TauKernel(TauGrid, Type)
-        print yellow("Smallest Singular Value: {0} ".format(s[-1]))
+        print(yellow(f"Smallest Singular Value: {s[-1]} "))
         return v.T[:, :Num]
 
     def MatFreqBasis(self, MatFreqGrid, Type, Num):
         """v[0:Num, :] maps Tau to N coefficients, v.T[:, 0:Num] maps coefficients to Tau"""
         _, s, v = self.MatFreqKernel(MatFreqGrid, Type)
-        print yellow("Smallest Singular Value: {0} ".format(s[-1]))
+        print(yellow(f"Smallest Singular Value: {s[-1]} "))
         return v.T[:, :Num]
 
     def TauKernel(self, TauGrid, Type):
@@ -52,7 +52,7 @@ class spectral:
             else:
                 return np.exp(-x*y)/(2*np.cosh(x))
         else:
-            print "Not implemented!"
+            print("Not implemented!")
             raise ValueError
 
 
@@ -65,8 +65,13 @@ def Kernel(w, t, beta, Type):
             return np.exp(x*(1.0-y))
         else:
             return np.exp(-x*y)/(2*np.cosh(x))
+    elif Type == "Bose":
+        # print(w)
+        # assert t > 0.0, "Tau must be positive!"
+        # assert w > 0.0, "Omega must be positive!"
+        return np.exp(-w*t)+np.exp(-w*(beta-t))
     else:
-        print "Not implemented!"
+        print("Not implemented!")
         raise ValueError
 
 
@@ -75,23 +80,39 @@ def TauKernel(Beta, TauGrid, RealFreqGrid, Type):
     kernel = np.zeros([len(RealFreqGrid), len(TauGrid)])
     for i, w in enumerate(RealFreqGrid):
         kernel[i, :] = Kernel(w, TauGrid, Beta, Type)
+        # print(i, w,  kernel[i, 0])
     # multiply the kernel with Delta \omega
     return kernel*dRealFreq/2.0/np.pi
 
 
 def MatFreqKernel(Beta, MatFreqGrid, RealFreqGrid, Type):
-    dRealFreq = (RealFreqGrid[-1]-RealFreqGrid[0])/len(RealFreqGrid)
-    kernel = np.zeros([len(RealFreqGrid), len(MatFreqGrid)], dtype=complex)
-    for i, w in enumerate(RealFreqGrid):
-        kernel[i, :] = 1.0/(1j*MatFreqGrid+w)
-    return kernel*dRealFreq/2.0/np.pi
+    if Type == "Fermi":
+        dRealFreq = (RealFreqGrid[-1]-RealFreqGrid[0])/len(RealFreqGrid)
+        kernel = np.zeros([len(RealFreqGrid), len(MatFreqGrid)], dtype=complex)
+        for i, w in enumerate(RealFreqGrid):
+            kernel[i, :] = 1.0/(1j*MatFreqGrid+w)
+        return kernel*dRealFreq/2.0/np.pi
+    elif Type == "Bose":
+        # require w in [0.0, +inf)
+        dRealFreq = (RealFreqGrid[-1]-RealFreqGrid[0])/len(RealFreqGrid)
+        kernel = np.zeros([len(RealFreqGrid), len(MatFreqGrid)], dtype=complex)
+        for i, w in enumerate(RealFreqGrid):
+            for j, wn in enumerate(MatFreqGrid):
+                if abs(w) < 1.0e-8 and wn == 0:
+                    kernel[i, j] = 2.0*Beta
+                else:
+                    kernel[i, j] = 2.0*w/(wn**2+w**2)*(1.0-np.exp(-Beta*w))
+        return kernel*dRealFreq/2.0/np.pi
+    else:
+        print("Not implemented!")
+        raise ValueError
 
 
 def FitData(Data, Num, v):
     assert Num < v.shape[0], "Number of basis is too large!"
     coef = np.dot(Data, v.T[:, :Num])
     fitted = np.dot(coef, v[:Num, :])
-    print "Max of |Sigma-Fitted Sigma|: ", np.amax(abs(Data-fitted))
+    print("Max of |Sigma-Fitted Sigma|: ", np.amax(abs(Data-fitted)))
     return fitted, coef
 
 

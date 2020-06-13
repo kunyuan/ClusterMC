@@ -1,6 +1,7 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
 from utility.IO import *
 import utility.fourier as fourier
+from utility.plot import *
 
 # XType = "Tau"
 XType = "Mom"
@@ -26,16 +27,14 @@ fig, ax = plt.subplots()
 
 if(XType == "Mom"):
     # Order 1 sigma is a delta function of tau
-    o = 1
-    yList = [np.average(d[o, :, :], axis=1) for d in Data]
-    y, err = Estimate(yList, Norm)
-    # plt.errorbar(MomGrid, y, yerr=err, fmt='o-', capthick=1,
-    #              capsize=4, color=ColorList[o], label="Order {0}".format(o))
+    y, err = Estimate(Data, Norm, lambda d: np.average(d[1, :, :], axis=1))
+    Errorbar(MomGrid/Para.kF, y, err, fmt='o-', color="r", label="Order 1")
     ax.set_xlim([MomGrid[0]/Para.kF, MomGrid[-1]/Para.kF])
-    ax.set_xlabel("$Ext K$", size=size)
+    ax.set_xlabel("$K$", size=size)
 
     x = MomGrid
-    l = Para.Mass2+Para.Lambda
+    l = np.sqrt(Para.Mass2+Para.Lambda)
+    # print(Para.Mass2, Para.Lambda)
     kF = Para.kF
     y = 2.0*kF/np.pi*(1.0+l/kF*np.arctan((x-kF)/l)-l/kF*np.arctan((x+kF)/l) -
                       (l*l-x*x+kF*kF)/4.0/x/kF*np.log((l*l+(x-kF)**2)/(l*l+(x+kF)**2)))
@@ -43,10 +42,10 @@ if(XType == "Mom"):
     x = kF
     Mu = 2.0*kF/np.pi*(1.0+l/kF*np.arctan((x-kF)/l)-l/kF*np.arctan((x+kF)/l) -
                        (l*l-x*x+kF*kF)/4.0/x/kF*np.log((l*l+(x-kF)**2)/(l*l+(x+kF)**2)))
-    print "Mu: ", Mu
+    print("Mu: ", Mu)
     for i in range(MomGridSize):
-        print "{:12.6f}{:12.6f}".format(MomGrid[i]/Para.kF, (y[i]-Mu)/Para.EF)
-    ax.plot(MomGrid/Para.kF, (y-Mu), "ko-")
+        print(f"{MomGrid[i]/Para.kF:12.6f}{(y[i]-Mu)/Para.EF:12.6f}")
+    ax.plot(MomGrid/Para.kF, y, "ko-")
 
 elif(XType == "Z"):
 
@@ -57,15 +56,12 @@ elif(XType == "Z"):
     kFidx = np.where(abs(arr - abs(MomGrid-Para.kF)) < 1.0e-20)[0][0]
 
     for o in Order:
-        # print np.sum(Data[0][1:o, :, :], axis=0).shape
-        dataW = [Fourier.naiveT2W(np.sum(d[2:o+1, :, :], axis=0))
-                 for d in Data]
-        # print dataW[0].shape
-        SigmaW, Err = Estimate(dataW, Norm)
+        SigmaW, Err = Estimate(Data, Norm, lambda d: Fourier.naiveT2W(
+            np.sum(d[2:o+1, :, :], axis=0)))
         # print SigmaW.shape
         # print SigmaW[:, 1]-SigmaW[:, 0]
-        ErrorPlot(ax, MomGrid/Para.kF, (SigmaW[:, 1].imag-SigmaW[:, 0].imag)/(2.0*np.pi/Para.Beta),
-                  ColorList[o], 's', "Order {0}".format(o))
+        Errorbar(MomGrid/Para.kF, 1.0-(SigmaW[:, 1].imag-SigmaW[:, 0].imag)/(2.0*np.pi/Para.Beta),
+                 color=ColorList[o], label="Order {0}".format(o))
         plt.axvline(x=1.0, linestyle='--')
     ax.set_xlim([MomGrid[0]/Para.kF, MomGrid[-1]/Para.kF])
     ax.set_xlabel("$Ext K$", size=size)
@@ -104,5 +100,8 @@ plt.legend(loc=1, frameon=False, fontsize=size)
 # plt.title("2D density integral")
 # plt.tight_layout()
 
+_ = InteractiveLegend(ax)
+
 # plt.savefig("spin_rs1_lambda1.pdf")
+plt.grid()
 plt.show()
