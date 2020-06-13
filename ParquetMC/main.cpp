@@ -3,7 +3,7 @@
 #include "fmt/format.h"
 #include "grid.h"
 #include "markov.h"
-#include "rng2.h"
+#include "rng.h"
 #include "timer.h"
 #include "utility.h"
 #include "utility/logger.h"
@@ -17,7 +17,6 @@ void InitVar();
 void MonteCarlo();
 
 // Global variable
-RandomFactory Random;
 parameter Para;        // global parameters
 diag::propagator Prop; // global progator
 variable Var;
@@ -44,7 +43,6 @@ int main(int argc, const char *argv[]) {
 
   ASSERT_ALLWAYS(Para.Seed > 0, "Random number seed must be positive integer!");
   ASSERT_ALLWAYS(Para.PID >= 0, "PID must be positive integer!");
-  Random.Reset(Para.Seed);
 
   InitPara(); // initialize global parameters
 
@@ -65,10 +63,10 @@ int main(int argc, const char *argv[]) {
   // Markov.Weight.Test();
 
   /////////////  Benchmark ////////////////////////////
-  for (int order = 1; order <= Para.Order; ++order) {
-    Markov.Weight.Benchmark(order, 10000);
-  }
-  exit(0);
+  // for (int order = 1; order <= Para.Order; ++order) {
+  //   Markov.Weight.Benchmark(order, 10000);
+  // }
+  // exit(0);
   //////////////////////////////////////////////////////
 
   LOG_INFO("Start simulation ...");
@@ -79,7 +77,7 @@ int main(int argc, const char *argv[]) {
     for (int i = 0; i < 1000000; i++) {
       Var.Counter++;
 
-      double x = Random.urn();
+      double x = rng::urn();
       if (x < 1.0 / 5.0) {
         Markov.ChangeOrder();
       } else if (x < 2.0 / 5.0) {
@@ -217,10 +215,10 @@ void InitVar() {
   // initialize momentum variables
   for (auto &mom : Var.LoopMom)
     for (int i = 0; i < D; i++)
-      mom[i] = Random.urn() * Para.Kf / sqrt(D);
+      mom[i] = rng::urn() * Para.Kf / sqrt(D);
 
   for (auto &t : Var.Tau)
-    t = Random.urn() * Para.Beta;
+    t = rng::urn() * Para.Beta;
 
   // reference tau, it should not be updated
   Var.Tau[0] = 0.0;

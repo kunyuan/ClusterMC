@@ -8,12 +8,11 @@
 #include "markov.h"
 #include "fmt/format.h"
 #include "fmt/printf.h"
-#include "rng2.h"
+#include "rng.h"
 #include "utility/logger.h"
 #include <iostream>
 
 extern parameter Para;
-extern RandomFactory Random;
 extern variable Var;
 
 using namespace mc;
@@ -57,7 +56,7 @@ void markov::ChangeOrder() {
   double Prop = 1.0;
   int NewOrder;
 
-  if (Random.urn() < 0.5) {
+  if (rng::urn() < 0.5) {
     // increase order
     Name = INCREASE_ORDER;
     if (Var.CurrOrder == Para.Order)
@@ -107,7 +106,7 @@ void markov::ChangeOrder() {
   double R = Prop * NewAbsWeight * Para.ReWeight[NewOrder] / Var.CurrAbsWeight /
              Para.ReWeight[Var.CurrOrder];
 
-  if (Random.urn() < R) {
+  if (rng::urn() < R) {
     Accepted[Name][Var.CurrOrder]++;
     Var.CurrOrder = NewOrder;
     Var.CurrAbsWeight = NewAbsWeight;
@@ -133,7 +132,7 @@ void markov::ChangeExtTau() {
   double R = Prop * NewAbsWeight * Para.TauGrid.weight[Var.CurrExtTauBin] /
              Var.CurrAbsWeight / Para.TauGrid.weight[OldTauBin];
 
-  if (Random.urn() < R) {
+  if (rng::urn() < R) {
     Accepted[CHANGE_EXTTAU][Var.CurrOrder]++;
     Var.CurrAbsWeight = NewAbsWeight;
   } else {
@@ -147,9 +146,9 @@ void markov::ChangeTau() {
   if (LastInterTauIdx(Var.CurrOrder) < 1)
     return;
 
-  int TauIndex = Random.irn(1, LastInterTauIdx(Var.CurrOrder));
+  int TauIndex = rng::irn(1, LastInterTauIdx(Var.CurrOrder));
 
-  // int TauIndex = Random.irn(0, LastInterTauIdx(Var.CurrOrder));
+  // int TauIndex = rng::irn(0, LastInterTauIdx(Var.CurrOrder));
 
   Proposed[CHANGE_TAU][Var.CurrOrder]++;
 
@@ -163,7 +162,7 @@ void markov::ChangeTau() {
 
   double R = Prop * NewAbsWeight / Var.CurrAbsWeight;
 
-  if (Random.urn() < R) {
+  if (rng::urn() < R) {
     Accepted[CHANGE_TAU][Var.CurrOrder]++;
     Var.CurrAbsWeight = NewAbsWeight;
   } else {
@@ -178,7 +177,7 @@ void markov::ChangeMomentum() {
   static momentum CurrMom;
 
   int LoopIndex =
-      Random.irn(FirstInterLoopIdx(), LastInterLoopIdx(Var.CurrOrder));
+      rng::irn(FirstInterLoopIdx(), LastInterLoopIdx(Var.CurrOrder));
 
   // cout << Var.CurrOrder << ", " << FirstInterLoopIdx() << ", "
   //      << LastInterLoopIdx(Var.CurrOrder) << ", " << LoopIndex << endl;
@@ -191,7 +190,7 @@ void markov::ChangeMomentum() {
   NewAbsWeight = fabs(Weight.Evaluate(Var.CurrOrder));
   double R = Prop * NewAbsWeight / Var.CurrAbsWeight;
 
-  if (Random.urn() < R) {
+  if (rng::urn() < R) {
     Accepted[CHANGE_MOM][Var.CurrOrder]++;
     Var.CurrAbsWeight = NewAbsWeight;
   } else {
@@ -230,7 +229,7 @@ void markov::ChangeExtMomentum() {
   NewAbsWeight = fabs(Weight.Evaluate(Var.CurrOrder));
   double R = Prop * NewAbsWeight / Var.CurrAbsWeight;
 
-  if (Random.urn() < R) {
+  if (rng::urn() < R) {
     Accepted[CHANGE_EXTMOM][Var.CurrOrder]++;
     Var.CurrAbsWeight = NewAbsWeight;
   } else {
@@ -250,8 +249,8 @@ void markov::ChangeExtMomentum() {
 
 double markov::GetNewTau(double &NewTau) {
   double Step = 1.0;
-  NewTau = Random.urn() * Para.Beta;
-  // NewTau2 = (Random.urn() - 0.5) * Step + NewTau1;
+  NewTau = rng::urn() * Para.Beta;
+  // NewTau2 = (rng::urn() - 0.5) * Step + NewTau1;
   // if (NewTau2 < 0.0)
   //   NewTau2 += Para.Beta;
   // if (NewTau2 > Para.Beta)
@@ -275,21 +274,21 @@ double markov::GetNewK(momentum &NewMom) {
   // if (dK > Para.Kf / 2)
   // dK = Para.Kf / 2; // to avoid dK>Kf situation
   // double dK = 1.0 * Var.CurrScale;
-  // double x = Random.urn();
+  // double x = rng::urn();
   // double KAmp = dK / 2.0 + dK * x;
   // if (x < 0)
   //   KAmp = Para.Kf + KAmp;
   // else
   //   KAmp = Para.Kf - KAmp;
   double dK = Para.Kf / 2.0;
-  double KAmp = Para.Kf + (Random.urn() - 0.5) * 2.0 * dK;
+  double KAmp = Para.Kf + (rng::urn() - 0.5) * 2.0 * dK;
   if (KAmp <= 0.0) {
     return 0.0;
   }
   // Kf-dK<KAmp<Kf+dK
-  double ϕ = 2.0 * π * Random.urn();
+  double ϕ = 2.0 * π * rng::urn();
   if (D == 3) {
-    double θ = π * Random.urn();
+    double θ = π * rng::urn();
     if (θ == 0.0)
       return 0.0;
     NewMom[0] = KAmp * sin(θ) * cos(ϕ);
@@ -309,7 +308,7 @@ double markov::GetNewK(momentum &NewMom) {
 
   //===== The simple way  =======================//
   // for (int i = 0; i < D; i++)
-  //   NewMom[i] = Para.Kf * (Random.urn() - 0.5) * 2.0;
+  //   NewMom[i] = Para.Kf * (rng::urn() - 0.5) * 2.0;
   // return pow(2.0 * Para.Kf, D);
 
   //============================================//
@@ -344,14 +343,14 @@ double markov::RemoveOldK(momentum &OldMom) {
 }
 
 double markov::ShiftK(const momentum &OldMom, momentum &NewMom) {
-  double x = Random.urn();
+  double x = rng::urn();
   double Prop;
   if (x < 1.0 / 3) {
     // COPYFROMTO(OldMom, NewMom);
     NewMom = OldMom;
-    int dir = Random.irn(0, D - 1);
+    int dir = rng::irn(0, D - 1);
     double STEP = Para.Beta > 1.0 ? Para.Kf / Para.Beta * 3.0 : Para.Kf;
-    NewMom[dir] += STEP * (Random.urn() - 0.5);
+    NewMom[dir] += STEP * (rng::urn() - 0.5);
     Prop = 1.0;
   } else if (x < 2.0 / 3) {
     double k = OldMom.norm();
@@ -360,7 +359,7 @@ double markov::ShiftK(const momentum &OldMom, momentum &NewMom) {
       NewMom = OldMom;
     } else {
       const double Lambda = 1.5;
-      double Ratio = 1.0 / Lambda + Random.urn() * (Lambda - 1.0 / Lambda);
+      double Ratio = 1.0 / Lambda + rng::urn() * (Lambda - 1.0 / Lambda);
       for (int i = 0; i < D; i++)
         NewMom[i] = OldMom[i] * Ratio;
       if (D == 2)
@@ -378,24 +377,24 @@ double markov::ShiftK(const momentum &OldMom, momentum &NewMom) {
 
 double markov::ShiftExtTransferK(const int &OldExtMomBin, int &NewExtMomBin) {
   if (DiagType == POLAR)
-    NewExtMomBin = Random.irn(0, Para.BoseKGrid.size - 1);
+    NewExtMomBin = rng::irn(0, Para.BoseKGrid.size - 1);
   else
-    NewExtMomBin = Random.irn(0, Para.FermiKGrid.size - 1);
+    NewExtMomBin = rng::irn(0, Para.FermiKGrid.size - 1);
   return 1.0;
 };
 
 double markov::ShiftExtTau(const int &OldTauBin, int &NewTauBin) {
-  NewTauBin = Random.irn(0, Para.TauGrid.size - 1);
+  NewTauBin = rng::irn(0, Para.TauGrid.size - 1);
   return 1.0;
 }
 
 double markov::ShiftExtLegK(const int &OldExtMom, int &NewExtMom) {
-  // double Theta = Random.urn() * 1.0 * PI;
+  // double Theta = rng::urn() * 1.0 * PI;
   // NewExtMom[0] = Para.Kf * cos(Theta);
   // NewExtMom[1] = Para.Kf * sin(Theta);
   // return 1.0;
 
-  NewExtMom = Random.irn(0, Para.AngleGrid.size - 1);
+  NewExtMom = rng::irn(0, Para.AngleGrid.size - 1);
 
   // ASSERT_ALLWAYS(diag::Angle2Index(cos(theta), AngBinSize) == NewKBin,
   //                "Not matched, " << NewKBin << " vs "
@@ -406,17 +405,17 @@ double markov::ShiftExtLegK(const int &OldExtMom, int &NewExtMom) {
 };
 
 double markov::ShiftTau(const double &OldTau, double &NewTau) {
-  double x = Random.urn();
+  double x = rng::urn();
   if (x < 1.0 / 3) {
     double DeltaT = Para.Beta / 10.0;
-    NewTau = OldTau + DeltaT * (Random.urn() - 0.5);
+    NewTau = OldTau + DeltaT * (rng::urn() - 0.5);
   } else if (x < 2.0 / 3) {
     NewTau = -OldTau;
   } else {
-    NewTau = Random.urn() * Para.Beta;
+    NewTau = rng::urn() * Para.Beta;
   }
 
-  // NewTau = Random.urn() * Para.Beta;
+  // NewTau = rng::urn() * Para.Beta;
   if (NewTau < 0.0)
     NewTau += Para.Beta;
   if (NewTau > Para.Beta)

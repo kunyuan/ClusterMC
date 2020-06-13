@@ -23,7 +23,7 @@ def CreateFolder(path):
 
 
 rootdir = os.getcwd()
-execute = "feyncalc.exe"
+execute = "parquet.exe"
 random.seed(datetime.now())
 
 
