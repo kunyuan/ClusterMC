@@ -3,6 +3,7 @@
 #include "fmt/format.h"
 #include "grid.h"
 #include "markov.h"
+#include "rng2.h"
 #include "timer.h"
 #include "utility.h"
 #include "utility/logger.h"
@@ -32,6 +33,8 @@ int main(int argc, const char *argv[]) {
   //// initialize the global log configuration   /////////////
   string LogFile = "_" + to_string(Para.PID) + ".log";
   LOGGER_CONF(LogFile, "MC", Logger::file_on | Logger::screen_on, INFO, INFO);
+
+  rng::randomize(Para.Seed);
 
 #ifdef NDEBUG
   LOG_INFO("NDEBUG is OFF. e.g, Turn off Range checking ...");

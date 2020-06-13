@@ -8,6 +8,7 @@
 #include "markov.h"
 #include "fmt/format.h"
 #include "fmt/printf.h"
+#include "rng2.h"
 #include "utility/logger.h"
 #include <iostream>
 
@@ -426,6 +427,7 @@ double markov::ShiftTau(const double &OldTau, double &NewTau) {
 #define NAME(x) #x
 
 markov::markov() {
+
   ///==== initialize Weight ============================//
   Weight.Initialization();
 

@@ -16,6 +16,9 @@ extern variable Var;          // global MC variables
 extern diag::propagator Prop; // global progator
 
 void weight::Initialization() {
+
+  // cout << "address " << &rng::global_urng() << endl;
+
   array<momentum *, 4> ExtLegK;
 
   if (DiagType == GAMMA) {
