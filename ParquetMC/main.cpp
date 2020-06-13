@@ -26,14 +26,17 @@ const string HelpStr = "Two parameters: PID Seed";
 
 int main(int argc, const char *argv[]) {
   // take two parameters: PID and Seed
-  Para.PID = atoi(argv[1]);
-  Para.Seed = atoi(argv[2]);
+  if (argc > 1) {
+    Para.PID = atoi(argv[1]);
+    rng::randomize(Para.PID);
+  } else
+    Para.PID = rng::randomize(); // use the random_device of the system to seed
+
+  ASSERT_ALLWAYS(Para.PID >= 0, "PID must be positive integer!");
 
   //// initialize the global log configuration   /////////////
   string LogFile = "_" + to_string(Para.PID) + ".log";
   LOGGER_CONF(LogFile, "MC", Logger::file_on | Logger::screen_on, INFO, INFO);
-
-  rng::randomize(Para.Seed);
 
 #ifdef NDEBUG
   LOG_INFO("NDEBUG is OFF. e.g, Turn off Range checking ...");
@@ -41,17 +44,14 @@ int main(int argc, const char *argv[]) {
   LOG_INFO("DEBUG mode is ON. e.g, Turn on Range checking ...");
 #endif
 
-  ASSERT_ALLWAYS(Para.Seed > 0, "Random number seed must be positive integer!");
-  ASSERT_ALLWAYS(Para.PID >= 0, "PID must be positive integer!");
-
   InitPara(); // initialize global parameters
 
   markov Markov;
   // InterruptHandler Interrupt;
 
-  timer ReweightTimer, PrinterTimer, SaveFileTimer, MessageTimer;
-  PrinterTimer.start();
-  SaveFileTimer.start();
+  timer ReweightTimer, PrintTimer, SaveTimer, MessageTimer;
+  PrintTimer.start();
+  SaveTimer.start();
   MessageTimer.start();
   ReweightTimer.start();
 
@@ -100,14 +100,14 @@ int main(int argc, const char *argv[]) {
 
       if (i % 1000 == 0) {
         // slow operations
-        if (PrinterTimer.check(Para.PrinterTimer)) {
+        if (PrintTimer.check(Para.PrintTimer)) {
           Markov.Weight.Test();
           Markov.PrintDeBugMCInfo();
           Markov.PrintMCInfo();
           LOG_INFO(ProgressBar((double)Block / Para.TotalStep));
         }
 
-        if (SaveFileTimer.check(Para.SaveFileTimer)) {
+        if (SaveTimer.check(Para.SaveTimer)) {
           // Interrupt.Delay(); // the process can not be killed in saving
           Markov.Weight.SaveToFile();
           // Interrupt.Resume(); // after this point, the process can be killed
@@ -157,13 +157,15 @@ void InitPara() {
 
   // Timer information
   auto timerStream = GetLine(File);
-  timerStream >> Para.PrinterTimer >> Para.SaveFileTimer >>
-      Para.ReweightTimer >> Para.MessageTimer;
+  timerStream >> Para.PrintTimer >> Para.SaveTimer >> Para.ReweightTimer >>
+      Para.MessageTimer;
 
   // ReWeight information
   auto reweightStream = GetLine(File);
-  for (int o = 0; o < Para.Order + 1; ++o)
-    reweightStream >> Para.ReWeight[o];
+  Para.ReWeight.resize(Para.Order + 1);
+  for (auto &w : Para.ReWeight)
+    reweightStream >> w;
+
   File.close();
 
   //// initialize the global parameter //////////////////////
@@ -190,8 +192,8 @@ void InitPara() {
                                    << "Fermi Energy: " << Para.Ef << "\n"
                                    << "Lambda: " << Para.Lambda << "\n");
 
-  LOG_INFO("PrintTimer: " << Para.PrinterTimer << "\n"
-                          << "SaveTimer: " << Para.SaveFileTimer << "\n"
+  LOG_INFO("PrintTimer: " << Para.PrintTimer << "\n"
+                          << "SaveTimer: " << Para.SaveTimer << "\n"
                           << "ReWeightTimer: " << Para.ReweightTimer << "\n"
                           << "MessageTimer: " << Para.MessageTimer << "\n");
 

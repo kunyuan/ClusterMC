@@ -8,6 +8,7 @@
 #include <array>
 #include <grid.h>
 #include <math.h>
+#include <unordered_map>
 #include <vector>
 
 // comment to turn on all assert
@@ -42,14 +43,13 @@ struct parameter {
   double Charge2;       // screening length^2
 
   // MC inputs
-  int TotalStep;             // total steps of the Monte Carlo
-  int Sweep;                 // how many MC steps between two measuring
-  int Seed, PID;             // rng seed, job ID
-  double ReWeight[MaxOrder]; // reweight factor for each group
+  int TotalStep;                // total steps of the Monte Carlo
+  int PID;                      // job ID, and the seed
+  std::vector<double> ReWeight; // reweight factor for each group
 
   // others
-  int PrinterTimer;  // time interval to print to screen
-  int SaveFileTimer; // time interval to file
+  int PrintTimer;    // time interval to print to screen
+  int SaveTimer;     // time interval to file
   int MessageTimer;  // time interval to check for new input data
   int ReweightTimer; // time interval to reweight different orders
 

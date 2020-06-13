@@ -57,7 +57,7 @@ for pid in PIDList:
     elif Cluster == "condor":
         with open(jobfile, "w") as fjob:
             fjob.write("executable = {0}\n".format(execute))
-            fjob.write("arguments = {0} {1}\n".format(pid, seed))
+            # fjob.write("arguments = {0} {1}\n".format(pid, seed))
             fjob.write("output ={0}\n".format(outfile))
             fjob.write("initialdir ={0}\n".format(homedir))
             fjob.write("queue")

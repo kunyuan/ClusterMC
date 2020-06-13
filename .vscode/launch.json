@@ -5,7 +5,7 @@
         "type": "cppdbg",
         "request": "launch",
         "program": "${workspaceFolder}/parquet.exe",
-        "args": ["0", "101"],
+        "args": ["0"],
         "stopAtEntry": false,
         "cwd": "${workspaceFolder}",
         "environment": [],

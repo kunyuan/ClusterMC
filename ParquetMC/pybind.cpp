@@ -15,7 +15,29 @@ PYBIND11_MODULE(parquetMC, m) {
       .def_readwrite("Order", &parameter::Order)
       .def_readwrite("Rs", &parameter::Rs)
       .def_readwrite("Mu", &parameter::Mu)
-      .def_readwrite("Beta", &parameter::Beta);
+      .def_readwrite("Beta", &parameter::Beta)
+      .def_readwrite("Kf", &parameter::Kf)
+      .def_readwrite("Ef", &parameter::Ef)
+      .def_readwrite("Mass2", &parameter::Mass2)
+      .def_readwrite("Lambda", &parameter::Lambda)
+      .def_readwrite("Charge2", &parameter::Charge2)
+      .def_readwrite("TotalStep", &parameter::TotalStep)
+      .def_readwrite("ReWeight", &parameter::ReWeight)
+      .def_readwrite("PrintTimer", &parameter::PrintTimer)
+      .def_readwrite("SaveTimer", &parameter::SaveTimer)
+      .def_readwrite("MessageTimer", &parameter::MessageTimer)
+      .def_readwrite("ReweightTimer", &parameter::ReweightTimer);
+
+  py::class_<variable>(m, "variable")
+      .def(py::init<>())
+      .def_readwrite("Counter", &variable::Counter)
+      .def_readwrite("CurrOrder", &variable::CurrOrder)
+      .def_readwrite("CurrAbsWeight", &variable::CurrAbsWeight)
+      .def_readwrite("CurrExtMomBin", &variable::CurrExtMomBin)
+      .def_readwrite("CurrExtTauBin", &variable::CurrExtTauBin)
+      .def_readwrite("CurrExtAngBin", &variable::CurrExtAngBin)
+      .def_readwrite("LoopMom", &variable::LoopMom)
+      .def_readwrite("Tau", &variable::Tau);
 
   py::class_<propagator>(m, "propagator")
       .def(py::init<>())
