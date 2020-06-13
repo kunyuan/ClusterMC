@@ -4,6 +4,7 @@ compiler=clang++
 #compiler=g++
 #type=Debug
 type=Release
+vcpkg_path=~/vcpkg/scripts/buildsystems/vcpkg.cmake
 mkdir build
 cd build
 
@@ -38,56 +39,8 @@ do
   esac
 done
 
-# OPTIND=1
-# while getopts ":h:n:d:" opt; do
-#      case $opt in
-#          h)  show_help
-#              exit 0
-#              ;;
-#          d)  type=Debug
-#              echo "Debug Mode is ON"
-#              ;;
-#          n)  rm -rf *
-#              echo "Clean up build directory"
-#              ;;
-#      esac
-# done
-# shift "$((OPTIND-1))"
-
-# if [[ $* == *--flag*]]
-# while :; do
-#   case $1 in
-#     -d|--debug)
-#       echo "debug mode ON"
-#       type=Debug
-#       shift
-#       # break
-#       ;;
-#     -n|--new)
-#       echo "Clean up build directory"
-#       rm -rf *
-#       break
-#       ;;
-#   esac
-#   # shift
-# done
-
-# if [ $@ = "-d"]; then
-#   echo "find"
-# else
-#   echo "no"
-# fi
-
-# if [ -n "$1" ]
-#   then
-#   if [ $1 = "-n" ] || [ $1 = "--new" ]; then
-#     make clean
-#     rm -rf * #force to rerun cmake configuration
-#     cmake -DCMAKE_BUILD_TYPE=$type -DCMAKE_CXX_COMPILER=$compiler ..
-#   fi
-# fi
 make clean
-cmake -DCMAKE_BUILD_TYPE=$type -DCMAKE_CXX_COMPILER=$compiler ..
+cmake -DCMAKE_BUILD_TYPE=$type -DCMAKE_CXX_COMPILER=$compiler -DCMAKE_TOOLCHAIN_FILE=$vcpkg_path ..
 make -j
 make install
 cd -

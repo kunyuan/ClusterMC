@@ -19,16 +19,17 @@ diagram_sigma.cpp
 utility/logger.cpp)
 
 target_include_directories(parquet.exe PRIVATE ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_SOURCE_DIR}/lib)
-
-# include_directories(${CMAKE_CURRENT_SOURCE_DIR})
-# include_directories(${CMAKE_SOURCE_DIR}/lib)
-# message("source dir:" ${FeynCalc_SOURCE_DIR})
-
-# file(GLOB_RECURSE HDRS *.h)
-# set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/..") 
-#crucial to output the .exe file to the root of project, and CLion compatible
-
-# ADD_EXECUTABLE(feyncalc.exe  ${SRCS} ${HDRS})
-# set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR})
-
 install (TARGETS parquet.exe DESTINATION ${CMAKE_SOURCE_DIR})
+
+
+find_package(pybind11 CONFIG REQUIRED)
+# add_subdirectory("${CMAKE_SOURCE_DIR}/pybind/pybind11" pybind11)
+pybind11_add_module(parquetMC
+    pybind.cpp
+    vertex4.cpp
+    vertex4_eval.cpp
+    propagator.cpp
+)
+target_include_directories(parquetMC PRIVATE ${CMAKE_SOURCE_DIR}/ParquetMC ${CMAKE_SOURCE_DIR}/lib)
+
+install(TARGETS parquetMC DESTINATION "${CMAKE_SOURCE_DIR}")

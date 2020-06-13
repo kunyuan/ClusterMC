@@ -7,7 +7,7 @@
 using namespace diag;
 namespace py = pybind11;
 
-PYBIND11_MODULE(vertex, m) {
+PYBIND11_MODULE(parquetMC, m) {
   using namespace pybind11::literals;
 
   py::class_<parameter>(m, "parameter")
