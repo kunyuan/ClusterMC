@@ -3,7 +3,7 @@
 
 #include "diagram.h"
 #include "observable.h"
-#include "utility/utility.h"
+#include "utility.h"
 #include "vertex4.h"
 #include <vector>
 // extern parameter Para;

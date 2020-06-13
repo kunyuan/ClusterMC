@@ -2,7 +2,8 @@
 #define FeynCalc_global_h
 
 #define FMT_HEADER_ONLY
-#include "utility/utility.h"
+#include "abort.h"
+#include "utility.h"
 #include <Eigen/Dense>
 #include <array>
 #include <grid.h>

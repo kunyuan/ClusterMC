@@ -11,7 +11,11 @@
 
 #include <csignal>
 #include <cstdlib>
+#include <iostream>
+#include <sstream>
 #include <stdexcept>
+#include <stdio.h>
+#include <string>
 
 // #define EXCEPTION(name)                                                        \
 //   class name : public std::runtime_error {                                     \
@@ -43,13 +47,23 @@
 
 // #define ABORT(msg) THROW(msg, ERROR)
 
+// inline std::string message(const std::string &msg) {
+//   std::ostringstream o;
+//   o << "@[" << __FILE__ << ":" << __LINE__ << "]: " << msg;
+//   return o.str();
+// }
+
 #define ABORT(msg)                                                             \
-  throw std::runtime_error(msg " @[" `__FILE__` ":" `__LINE__` "]");
+  {                                                                            \
+    std::ostringstream o;                                                      \
+    o << "@[" << __FILE__ << ":" << __LINE__ << "]: " << msg;                  \
+    throw std::runtime_error(o.str());                                         \
+  }
 
 #define ASSERT_ALLWAYS(condition, msg)                                         \
   do {                                                                         \
     if ((condition) == false)                                                  \
-      ABORT(#condition " does not hold! " msg);                                \
+      ABORT(#condition << " fails: " << msg << std::endl);                     \
   } while (0)
 
 // ASSERT will turn off when NDEBUG is on
@@ -58,45 +72,5 @@
 #else
 #define ASSERT(condition, msg) ASSERT_ALLWAYS(condition, msg);
 #endif
-
-class InterruptHandler {
-public:
-  InterruptHandler() {
-    __IsDelaying = false;
-    __Signal = -1;
-    signal(SIGINT, __SignalHandler);
-    signal(SIGTERM, __SignalHandler);
-  };
-  ~InterruptHandler() {
-    signal(SIGINT, SIG_DFL);
-    signal(SIGTERM, SIG_DFL);
-  };
-  void Delay() {
-    signal(SIGINT, __DelayedSignalHandler);
-    signal(SIGTERM, __DelayedSignalHandler);
-    __IsDelaying = true;
-  };
-  void Resume() {
-    signal(SIGINT, __SignalHandler);
-    signal(SIGTERM, __SignalHandler);
-    if (__IsDelaying && (__Signal == SIGINT || __Signal == SIGTERM)) {
-      __SignalHandler(__Signal);
-      __Signal = -1;
-      __IsDelaying = false;
-    }
-  };
-  bool IsDelaying() { return __IsDelaying; }
-
-private:
-  // signal handler for normal state
-  static void __SignalHandler(int signum) {
-    __Signal = signum;
-    exit(signum);
-  }
-  // signal handler after Delay() is called
-  static void __DelayedSignalHandler(int signum) { __Signal = signum; };
-  bool __IsDelaying;
-  static int __Signal;
-};
 
 #endif /* defined(__Fermion_Simulator__error_handler__) */

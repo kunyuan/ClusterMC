@@ -53,9 +53,7 @@ int vertex4::_AddTidxPair(const t4pair &T) {
   // find the T array in the list, if failed, create a new array
   for (int i = 0; i < T4.size(); i++) {
     auto t = T4[i];
-    ASSERT_ALLWAYS(t[INL] == T[INL],
-                   "left Tin must be the same for all subvertex!"
-                       << t[INL] << " vs " << T[INL]);
+    ASSERT_ALLWAYS(t[INL] == T[INL], fmt::format("{0} vs {1}", t[INL], T[INL]));
     if (t[OUTL] == T[OUTL] && t[INR] == T[INR] && t[OUTR] == T[OUTR])
       return i;
   }
@@ -136,7 +134,7 @@ bubble vertex4::_BuildBubble(channel chan, int ol) {
         Gx.push_back({LvT[OUTL], RvT[INR]});
         break;
       default:
-        ABORT("The channel does not exist! " << chan);
+        ABORT(fmt::format("The channel does not exist! {0}", chan));
         break;
       }
 

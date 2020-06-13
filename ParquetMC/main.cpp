@@ -1,6 +1,11 @@
+#define FMT_HEADER_ONLY
+#include "abort.h"
+#include "fmt/format.h"
 #include "grid.h"
 #include "markov.h"
 #include "timer.h"
+#include "utility.h"
+#include "utility/logger.h"
 #include <iostream>
 #include <math.h>
 
@@ -41,7 +46,7 @@ int main(int argc, const char *argv[]) {
   InitPara(); // initialize global parameters
 
   markov Markov;
-  InterruptHandler Interrupt;
+  // InterruptHandler Interrupt;
 
   timer ReweightTimer, PrinterTimer, SaveFileTimer, MessageTimer;
   PrinterTimer.start();
@@ -102,9 +107,9 @@ int main(int argc, const char *argv[]) {
         }
 
         if (SaveFileTimer.check(Para.SaveFileTimer)) {
-          Interrupt.Delay(); // the process can not be killed in saving
+          // Interrupt.Delay(); // the process can not be killed in saving
           Markov.Weight.SaveToFile();
-          Interrupt.Resume(); // after this point, the process can be killed
+          // Interrupt.Resume(); // after this point, the process can be killed
         }
 
         if (ReweightTimer.check(Para.ReweightTimer)) {
@@ -123,9 +128,9 @@ int main(int argc, const char *argv[]) {
   }
 
   Markov.PrintMCInfo();
-  Interrupt.Delay(); // the process can not be killed in saving
+  // Interrupt.Delay(); // the process can not be killed in saving
   Markov.Weight.SaveToFile();
-  Interrupt.Resume(); // after this point, the process can be killed
+  // Interrupt.Resume(); // after this point, the process can be killed
 
   LOG_INFO("Simulation is ended!");
 
@@ -167,7 +172,7 @@ void InitPara() {
   } else if (D == 2) {
     Kf = sqrt(2.0) / Para.Rs; // 2D
   } else {
-    ABORT("Dimension " << D << " has not yet been implemented!");
+    ABORT(fmt::format("Dimension {} has not yet been implemented!", D));
   }
   Para.Kf = Kf;
   Para.Ef = Kf * Kf;

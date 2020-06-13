@@ -1,6 +1,7 @@
 #ifndef grid_H
 #define grid_H
 
+#include "abort.h"
 #include <algorithm>
 #include <array>
 #include <assert.h>
@@ -70,6 +71,7 @@ public:
   vector<double> weight;
 
   vector<double> build(double beta, int _size, double scale) {
+    ASSERT_ALLWAYS(_size > 0, "size must be positive!");
     size = _size;
     assert(size > 2);
     assert(size % 2 == 0);

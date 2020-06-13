@@ -1,7 +1,7 @@
 #ifndef response_H
 #define response_H
 
-#include <assert.h>
+#include "abort.h"
 #include <math.h>
 namespace green {
 
@@ -13,7 +13,7 @@ namespace green {
  * @param tau (-beta, beta), exactly equal time is treated as 0^-
  */
 template <typename T> T fermiGreen(T beta, T tau, T Ek) {
-  assert(tau > -beta && tau < beta);
+  ASSERT(tau > -beta && tau < beta, tau << " is out of the range!");
   T green = 1.0;
   if (tau == 0.0)
     tau = -1.0e-12;
@@ -32,7 +32,7 @@ template <typename T> T fermiGreen(T beta, T tau, T Ek) {
   else
     green *= exp(x * (1.0 - y));
 
-  assert(isfinite(green));
+  ASSERT(isfinite(green), green);
   return green;
 };
 
@@ -45,7 +45,7 @@ template <typename T> T fermiGreen(T beta, T tau, T Ek) {
  * @return fock diagram without a chemical-potential shift
  */
 
-template <typename T> T fockYukawa(T k, T kF, T mass, bool shift) {
+template <typename T> T fockYukawa(T k, T kF, T mass, bool shift = false) {
   // warning: this function only works for T=0!!!!
   T l = mass;
   T fock = 1.0 + l / kF * atan((k - kF) / l);
@@ -61,7 +61,7 @@ template <typename T> T fockYukawa(T k, T kF, T mass, bool shift) {
     fock = -shift;
   }
 
-  assert(isfinite(fock));
+  ASSERT_ALLWAYS(isfinite(fock), fock);
   return fock;
   // return fock;
 };

@@ -167,8 +167,9 @@ bool sigma::Test() {
   //   cout << "Test G: " << G1 << ", " << G2 << ", " << G3 << endl;
   //   cout << "Test: " << VerDir << ", " << VerEx << endl;
 
-  ASSERT_ALLWAYS(IsEqual(Weight, Evaluate()),
-                 "Sigma weight error: " << Weight << " vs " << Evaluate());
+  ASSERT_ALLWAYS(
+      IsEqual(Weight, Evaluate()),
+      fmt::format("Sigma weight error: {0} vs {1}", Weight, Evaluate()));
   // cout << "G_test=" << G1 << ", " << G2 << ", " << G3 << endl;
   // cout << "Ver_test=" << VerWeightDir << ", " << VerWeightExLeft << endl;
 

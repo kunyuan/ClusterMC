@@ -1,5 +1,6 @@
 #define FMT_HEADER_ONLY
 #include "vertex4.h"
+#include "abort.h"
 #include "fmt/format.h"
 #include <iostream>
 
@@ -96,9 +97,10 @@ int vertex4::_AddTidxPair(const array<int, 4> &T) {
   for (int i = 0; i < Tpair.size(); i++) {
     auto t = Tpair[i];
 
-    ASSERT_ALLWAYS(t[INL] == T[INL],
-                   "left Tin must be the same for all subvertex!"
-                       << t[INL] << " vs " << T[INL]);
+    ASSERT_ALLWAYS(
+        t[INL] == T[INL],
+        fmt::format("left Tin must be the same for all subvertex! {0} vs {1}",
+                    t[INL], T[INL]));
 
     if (t[OUTL] == T[OUTL] && t[INR] == T[INR] && t[OUTR] == T[OUTR])
       return i;
@@ -168,7 +170,7 @@ bubble vertex4::_BuildBubble(channel chan, int ol) {
         GTidx = G[chan].AddTidxPair({LvT[OUTL], RvT[INR]});
         break;
       default:
-        ABORT("The channel does not exist! " << chan);
+        ABORT(fmt::format("The channel does not exist! {}", chan));
         break;
       }
 

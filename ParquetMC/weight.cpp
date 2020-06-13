@@ -1,9 +1,10 @@
 #include "weight.h"
+#include "abort.h"
 #include "diag/vertex4.h"
 #include "fmt/format.h"
 #include "global.h"
 #include "timer.h"
-#include "utility/abort.h"
+#include "utility/logger.h"
 #include <iostream>
 #include <string>
 
@@ -24,7 +25,7 @@ void weight::Initialization() {
     // vector<channel> Chan = {U, UC};
     // vector<channel> Chan = {T};
     for (int order = 1; order <= Para.Order; order++) {
-      LOG_INFO("Generating order " << order);
+      LOG_INFO(fmt::format("Generating order {}", order));
       Gamma[order].Build(0,     // level
                          order, // loopNum
                          4,     // loop index of the first internal K

@@ -3,7 +3,7 @@
 
 #include "global.h"
 #include "propagator.h"
-#include "utility/utility.h"
+#include "utility.h"
 #include <array>
 #include <string>
 #include <vector>

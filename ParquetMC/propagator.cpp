@@ -3,6 +3,7 @@
 #include "fmt/format.h"
 #include "fmt/printf.h"
 #include "green.h"
+#include "utility/logger.h"
 #include <iostream>
 
 using namespace diag;
