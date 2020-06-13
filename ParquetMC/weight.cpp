@@ -1,6 +1,5 @@
 #include "weight.h"
 #include "abort.h"
-#include "diag/vertex4.h"
 #include "fmt/format.h"
 #include "global.h"
 #include "timer.h"
