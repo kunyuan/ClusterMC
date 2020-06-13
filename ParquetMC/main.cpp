@@ -1,6 +1,6 @@
 #include "grid.h"
 #include "markov.h"
-#include "utility/timer.h"
+#include "timer.h"
 #include <iostream>
 #include <math.h>
 
@@ -57,10 +57,10 @@ int main(int argc, const char *argv[]) {
   // Markov.Weight.Test();
 
   /////////////  Benchmark ////////////////////////////
-  // for (int order = 1; order <= Para.Order; ++order) {
-  //   Markov.Weight.Benchmark(order, 10000);
-  // }
-  // exit(0);
+  for (int order = 1; order <= Para.Order; ++order) {
+    Markov.Weight.Benchmark(order, 10000);
+  }
+  exit(0);
   //////////////////////////////////////////////////////
 
   LOG_INFO("Start simulation ...");

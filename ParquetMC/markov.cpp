@@ -6,8 +6,9 @@
 //
 #define FMT_HEADER_ONLY
 #include "markov.h"
-#include "utility/fmt/format.h"
-#include "utility/fmt/printf.h"
+#include "fmt/format.h"
+#include "fmt/printf.h"
+#include "utility/logger.h"
 #include <iostream>
 
 extern parameter Para;

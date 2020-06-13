@@ -1,8 +1,8 @@
 #define FMT_HEADER_ONLY
 #include "propagator.h"
+#include "fmt/format.h"
+#include "fmt/printf.h"
 #include "green.h"
-#include "utility/fmt/format.h"
-#include "utility/fmt/printf.h"
 #include <iostream>
 
 using namespace diag;

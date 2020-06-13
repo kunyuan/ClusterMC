@@ -1,9 +1,9 @@
 #define FMT_HEADER_ONLY
 #include "observable.h"
+#include "fmt/format.h"
+#include "fmt/printf.h"
 #include "propagator.h"
 #include "utility/abort.h"
-#include "utility/fmt/format.h"
-#include "utility/fmt/printf.h"
 #include "utility/utility.h"
 #include <cmath>
 #include <iostream>

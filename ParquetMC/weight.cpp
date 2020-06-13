@@ -1,9 +1,9 @@
 #include "weight.h"
 #include "diag/vertex4.h"
+#include "fmt/format.h"
 #include "global.h"
+#include "timer.h"
 #include "utility/abort.h"
-#include "utility/fmt/format.h"
-#include "utility/timer.h"
 #include <iostream>
 #include <string>
 

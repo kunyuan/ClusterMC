@@ -1,5 +1,5 @@
 #define FMT_HEADER_ONLY
-#include "utility/fmt/format.h"
+#include "fmt/format.h"
 #include "vertex4.h"
 #include <array>
 #include <iostream>
