@@ -2,10 +2,10 @@
 #define FeynCalc_global_h
 
 #define FMT_HEADER_ONLY
-#include "lib/grid.h"
 #include "utility/utility.h"
 #include <Eigen/Dense>
 #include <array>
+#include <grid.h>
 #include <math.h>
 #include <vector>
 

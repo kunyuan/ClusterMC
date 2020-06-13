@@ -1,6 +1,6 @@
 #define FMT_HEADER_ONLY
 #include "propagator.h"
-#include "lib/green.h"
+#include "green.h"
 #include "utility/fmt/format.h"
 #include "utility/fmt/printf.h"
 #include <iostream>
@@ -29,7 +29,7 @@ double propagator::Green(double Tau, const momentum &K, spin Spin, int GType) {
   //                            << " vs " << Fock(k));
   // Ek += -sigma;
   // }
-  return fermiGreen(Para.Beta, Tau, Ek);
+  return green::fermiGreen(Para.Beta, Tau, Ek);
 }
 
 void propagator::LoadGreen() {

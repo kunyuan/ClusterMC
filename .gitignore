@@ -53,6 +53,5 @@ callgrind*
 in00
 inlist
 *.data
-*.vscode
 parameter
 *.pdf

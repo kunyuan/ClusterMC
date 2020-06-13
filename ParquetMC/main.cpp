@@ -1,4 +1,4 @@
-#include "lib/grid.h"
+#include "grid.h"
 #include "markov.h"
 #include "utility/timer.h"
 #include <iostream>
@@ -29,9 +29,9 @@ int main(int argc, const char *argv[]) {
   LOGGER_CONF(LogFile, "MC", Logger::file_on | Logger::screen_on, INFO, INFO);
 
 #ifdef NDEBUG
-  LOG_INFO("NDEBUG mode is OFF. e.g, Turn off Range checking ...");
+  LOG_INFO("NDEBUG is OFF. e.g, Turn off Range checking ...");
 #else
-  LOG_INFO("NDEBUG mode is ON. e.g, Turn on Range checking ...");
+  LOG_INFO("DEBUG mode is ON. e.g, Turn on Range checking ...");
 #endif
 
   ASSERT_ALLWAYS(Para.Seed > 0, "Random number seed must be positive integer!");
