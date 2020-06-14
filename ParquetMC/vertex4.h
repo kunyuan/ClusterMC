@@ -45,6 +45,11 @@ public:
   vector<channel> Channel;      // list of channels except I
   vector<channel> ChannelCT;    // list of counterterm channels except I
   vector<verWeight> ChanWeight; // the weight of each channel
+  int Level;
+  int Side; // right side vertex is always a full gamma4
+  int Order;
+  int Tidx;
+  int LoopIdx;
 
   array<green, 4> G;           // G for 0, T, U, S, TC and UC
   vector<array<int, 4>> Tpair; // external T list
@@ -63,12 +68,6 @@ public:
   void Test() { _TestOneLoopGamma(); };
 
 private:
-  int Level;
-  int Side; // right side vertex is always a full gamma4
-  int Order;
-  int Tidx;
-  int LoopIdx;
-
   // vector<envelope> Envelope; // envelop diagrams
 
   void _BuildBare();
