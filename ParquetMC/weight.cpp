@@ -27,39 +27,39 @@ void weight::Initialization() {
     // vector<channel> Chan = {U, UC};
     // vector<channel> Chan = {T};
     for (int order = 1; order <= Para.Order; order++) {
-      LOG_INFO(fmt::format("Generating order {}", order));
+      // LOG_INFO(fmt::format("Generating order {}", order));
       Gamma[order].Build(0,     // level
                          order, // loopNum
                          4,     // loop index of the first internal K
                          0,     // tau index of the InTL leg
                          Chan, RIGHT);
-      if (order < 4)
-        LOG_INFO(Gamma[order].ToString());
+      // if (order < 4)
+      //   LOG_INFO(Gamma[order].ToString());
     }
 
   } else if (DiagType == SIGMA) {
     /////////////////////////// Sigma /////////////////////////
     for (int order = 1; order <= Para.Order; order++) {
-      LOG_INFO("Generating order " << order);
+      // LOG_INFO("Generating order " << order);
       Sigma[order].Build(order);
-      if (order < 4)
-        LOG_INFO(Sigma[order].ToString());
+      // if (order < 4)
+      //   LOG_INFO(Sigma[order].ToString());
     }
   } else if (DiagType == POLAR) {
     /////////////////////////// Polar /////////////////////////
     for (int order = 1; order <= Para.Order; order++) {
-      LOG_INFO("Generating order " << order);
+      // LOG_INFO("Generating order " << order);
       Polar[order].Build(order);
-      if (order < 4)
-        LOG_INFO(Polar[order].Vertex.ToString());
+      // if (order < 4)
+      //   LOG_INFO(Polar[order].Vertex.ToString());
     }
   } else if (DiagType == DELTA) {
     ////////////////////////// Delta /////////////////////////
     for (int order = 1; order <= Para.Order; order++) {
-      LOG_INFO("Generating order " << order);
+      // LOG_INFO("Generating order " << order);
       Delta[order].Build(order);
-      if (order < 4)
-        LOG_INFO(Delta[order].Vertex.ToString());
+      // if (order < 4)
+      //   LOG_INFO(Delta[order].Vertex.ToString());
     }
   }
 }

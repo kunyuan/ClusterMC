@@ -1,4 +1,5 @@
 #include "global.h"
+#include "markov.h"
 #include "propagator.h"
 #include "vertex4.h"
 #include <pybind11/eigen.h>
@@ -94,5 +95,11 @@ PYBIND11_MODULE(parquetMC, m) {
         .def_readwrite("LVer", &bubble::LVer)
         .def_readwrite("RVer", &bubble::RVer)
         .def_readwrite("Map", &bubble::Map);
+  }
+
+  {
+    using namespace mc;
+    // py::class_<markov>(m, "markov").def(py::init<>());
+    // .def("ChangeTau", &markov::ChangeTau);
   }
 }
