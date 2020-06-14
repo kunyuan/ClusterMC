@@ -2,6 +2,7 @@
 #define markov_H
 
 #include "global.h"
+#include "group.h"
 #include "weight.h"
 #include <string>
 #include <unordered_map>
@@ -14,6 +15,10 @@ const int MCUpdates = 6;
 class markov {
 public:
   markov();
+  Group group;
+
+  // parameter &Para;
+  // variable &Var;
 
   diag::weight Weight; // Weight handler
 

@@ -2,5 +2,9 @@
     "cmake.sourceDirectory": "${workspaceFolder}",
     "files.associations": {
         "array": "cpp"
+    },
+    "python.pythonPath": "/home/kun/anaconda2/envs/mypython3/bin/python",
+    "cmakeSettings": {
+        "CMAKE_TOOLCHAIN_FILE": "~/vcpkg/scripts/buildsystems/vcpkg.cmake"
     }
 }

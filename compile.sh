@@ -4,7 +4,7 @@ compiler=clang++
 #compiler=g++
 #type=Debug
 type=Release
-vcpkg_path=~/vcpkg/scripts/buildsystems/vcpkg.cmake
+#vcpkg_path=~/vcpkg/scripts/buildsystems/vcpkg.cmake
 mkdir build
 cd build
 
@@ -40,7 +40,8 @@ do
 done
 
 make clean
-cmake -DCMAKE_BUILD_TYPE=$type -DCMAKE_CXX_COMPILER=$compiler -DCMAKE_TOOLCHAIN_FILE=$vcpkg_path ..
+#cmake -DCMAKE_BUILD_TYPE=$type -DCMAKE_CXX_COMPILER=$compiler -DCMAKE_TOOLCHAIN_FILE=$vcpkg_path ..
+cmake -DCMAKE_BUILD_TYPE=$type -DCMAKE_CXX_COMPILER=$compiler ..
 make -j
 make install
 cd -

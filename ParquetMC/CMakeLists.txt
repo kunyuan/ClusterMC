@@ -13,6 +13,7 @@ vertex4.cpp
 vertex4_eval.cpp
 vertex4_test.cpp
 weight.cpp
+group.cpp
 diagram_polar.cpp
 diagram_sigma.cpp
 diagram_sigma.cpp
@@ -22,14 +23,4 @@ target_include_directories(parquet.exe PRIVATE ${CMAKE_CURRENT_SOURCE_DIR} ${CMA
 install (TARGETS parquet.exe DESTINATION ${CMAKE_SOURCE_DIR})
 
 
-find_package(pybind11 CONFIG REQUIRED)
-# add_subdirectory("${CMAKE_SOURCE_DIR}/pybind/pybind11" pybind11)
-pybind11_add_module(parquetMC
-    pybind.cpp
-    vertex4.cpp
-    vertex4_eval.cpp
-    propagator.cpp
-)
-target_include_directories(parquetMC PRIVATE ${CMAKE_SOURCE_DIR}/ParquetMC ${CMAKE_SOURCE_DIR}/lib)
-
-install(TARGETS parquetMC DESTINATION "${CMAKE_SOURCE_DIR}")
+# find_package(pybind11 CONFIG REQUIRED)
