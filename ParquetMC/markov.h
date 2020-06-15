@@ -15,7 +15,7 @@ const int MCUpdates = 6;
 class markov {
 public:
   markov();
-  Group group;
+  diag::Group group;
 
   // parameter &Para;
   // variable &Var;

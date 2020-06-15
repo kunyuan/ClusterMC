@@ -2,11 +2,11 @@
 #define FeynCalc_global_h
 
 #define FMT_HEADER_ONLY
-#include "abort.h"
-#include "utility.h"
-#include <Eigen/Dense>
+#include "../lib/Eigen/Dense"
+#include "../lib/abort.h"
+#include "../lib/grid.h"
+#include "../lib/utility.h"
 #include <array>
-#include <grid.h>
 #include <math.h>
 #include <unordered_map>
 #include <vector>
@@ -31,6 +31,7 @@ const diagtype DiagType = POLAR;
 // typedef kBoseGrid kGrid; // for gamma, polar and delta
 
 typedef Eigen::Matrix<double, D, 1> momentum; // momentum vector
+typedef momentum mom;                         // momentum vector
 typedef Eigen::Vector2d verWeight; // direct and exchange weights for gamma
 
 /////////// Global Parameter ////////////////////
