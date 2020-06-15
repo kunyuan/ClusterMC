@@ -25,9 +25,9 @@ install(TARGETS green DESTINATION "${CMAKE_SOURCE_DIR}")
 install(TARGETS grid DESTINATION "${CMAKE_SOURCE_DIR}")
 
 #build python module in ParquetMC
-pybind11_add_module(global
+pybind11_add_module(parameter
     ./solver/pybind.cpp
 )
-target_include_directories(global PRIVATE ${CMAKE_SOURCE_DIR}/solver ${CMAKE_SOURCE_DIR}/lib)
+target_include_directories(parameter PRIVATE ${CMAKE_SOURCE_DIR}/solver ${CMAKE_SOURCE_DIR}/lib)
 
-install(TARGETS global DESTINATION "${CMAKE_SOURCE_DIR}")
+install(TARGETS parameter DESTINATION "${CMAKE_SOURCE_DIR}")

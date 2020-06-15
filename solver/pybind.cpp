@@ -4,7 +4,7 @@
 #include <pybind11/stl.h>
 namespace py = pybind11;
 
-PYBIND11_MODULE(parquetMC, m) {
+PYBIND11_MODULE(parameter, m) {
   using namespace pybind11::literals;
 
   py::enum_<DiagType>(m, "DiagType", py::arithmetic())
