@@ -18,19 +18,16 @@ set(pybind11_DIR "${CMAKE_SOURCE_DIR}/pybind11")
 add_subdirectory(pybind11)
 
 #build python module in lib
-pybind11_add_module(grid ./lib/grid.cpp)
 pybind11_add_module(green ./lib/green.cpp)
+pybind11_add_module(grid ./lib/grid.cpp)
 
-install(TARGETS grid DESTINATION "${CMAKE_SOURCE_DIR}")
 install(TARGETS green DESTINATION "${CMAKE_SOURCE_DIR}")
+install(TARGETS grid DESTINATION "${CMAKE_SOURCE_DIR}")
 
 #build python module in ParquetMC
-pybind11_add_module(parquetMC
-    ./ParquetMC/pybind.cpp
-    ./ParquetMC/vertex4.cpp
-    ./ParquetMC/vertex4_eval.cpp
-    ./ParquetMC/propagator.cpp
+pybind11_add_module(global
+    ./solver/pybind.cpp
 )
-target_include_directories(parquetMC PRIVATE ${CMAKE_SOURCE_DIR}/ParquetMC ${CMAKE_SOURCE_DIR}/lib)
+target_include_directories(global PRIVATE ${CMAKE_SOURCE_DIR}/solver ${CMAKE_SOURCE_DIR}/lib)
 
-install(TARGETS parquetMC DESTINATION "${CMAKE_SOURCE_DIR}")
+install(TARGETS global DESTINATION "${CMAKE_SOURCE_DIR}")

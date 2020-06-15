@@ -1,10 +1,9 @@
-#include "../lib/grid.h"
+#include "grid.h"
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 
 namespace py = pybind11;
 using namespace grid;
-
 PYBIND11_MODULE(grid, m) {
   using namespace pybind11::literals;
   py::class_<Tau>(m, "Tau")
